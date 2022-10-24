@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:9.6
+    ports:
+      - "5432:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: psql-12345
+      POSTGRES_DB: ecommerce-clone
+    volumes:
+      - ~/postgres-data:/var/lib/postgresql/data
