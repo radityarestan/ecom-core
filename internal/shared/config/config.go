@@ -3,22 +3,22 @@ package config
 import "github.com/spf13/viper"
 
 type ServerConfig struct {
-	Port string `mapstructure:"port"`
+	Port string `mapstructure:"PORT"`
 }
 
 type DatabaseConfig struct {
-	Host     string `mapstructure:"host"`
-	Port     string `mapstructure:"port"`
-	User     string `mapstructure:"user"`
-	Password string `mapstructure:"password"`
-	DbName   string `mapstructure:"name"`
-	SSLMode  string `mapstructure:"sslmode"`
-	Timezone string `mapstructure:"timezone"`
+	Host     string `mapstructure:"HOST"`
+	Port     string `mapstructure:"PORT"`
+	User     string `mapstructure:"USER"`
+	Password string `mapstructure:"PASSWORD"`
+	DbName   string `mapstructure:"NAME"`
+	SSLMode  string `mapstructure:"SSLMODE"`
+	Timezone string `mapstructure:"TIMEZONE"`
 }
 
 type Config struct {
-	Server   ServerConfig   `mapstructure:"server"`
-	Database DatabaseConfig `mapstructure:"database"`
+	Server   ServerConfig   `mapstructure:"SERVER"`
+	Database DatabaseConfig `mapstructure:"DATABASE"`
 }
 
 func NewConfig() (*Config, error) {

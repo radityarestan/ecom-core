@@ -24,7 +24,9 @@ func NewPostgres(conf *config.Config) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	db.AutoMigrate(&entity.User{})
+	if err := db.AutoMigrate(&entity.User{}); err != nil {
+		return nil, err
+	}
 
 	return db, nil
 }

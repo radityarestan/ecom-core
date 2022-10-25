@@ -7,11 +7,21 @@ import (
 
 type (
 	Auth interface {
+		FindUserByEmail(orm *gorm.DB, email string) (*entity.User, error)
 		CreateUser(orm *gorm.DB, user *entity.User) (*entity.User, error)
 	}
 
 	authRepo struct{}
 )
+
+func (a *authRepo) FindUserByEmail(orm *gorm.DB, email string) (*entity.User, error) {
+	var user = &entity.User{}
+	if err := orm.Where("email = ?", email).First(user).Error; err != nil {
+		return nil, err
+	}
+
+	return user, nil
+}
 
 func (a *authRepo) CreateUser(orm *gorm.DB, user *entity.User) (*entity.User, error) {
 	if err := orm.Create(user).Error; err != nil {

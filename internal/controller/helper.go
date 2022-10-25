@@ -1,6 +1,8 @@
 package controller
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/labstack/echo/v4"
+)
 
 func bind(c echo.Context, req interface{}) error {
 	if err := c.Bind(req); err != nil {

@@ -2,9 +2,9 @@ package dto
 
 const (
 	// StatusSuccess is a constant for success status
-	StatusSuccess = "Success"
+	StatusSuccess = "success"
 	// StatusError is a constant for error status
-	StatusError = "Error"
+	StatusError = "error"
 )
 
 type Response struct {

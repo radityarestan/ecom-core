@@ -13,8 +13,11 @@ type Auth struct {
 	Service service.Holder
 }
 
-func (impl *Auth) Post(c echo.Context) error {
-	var req = dto.TestRequest{}
+func (impl *Auth) SignUp(c echo.Context) error {
+	var (
+		ctx = c.Request().Context()
+		req = dto.SignUpRequest{}
+	)
 
 	if err := bind(c, &req); err != nil {
 		return c.JSON(http.StatusBadRequest, dto.Response{
@@ -23,8 +26,15 @@ func (impl *Auth) Post(c echo.Context) error {
 		})
 	}
 
-	res, err := impl.Service.Auth.CreateUser(c.Request().Context(), &req)
+	res, err := impl.Service.Auth.SignUp(ctx, &req)
 	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	if err := c.Validate(res); err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),

@@ -5,9 +5,15 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"github.com/radityarestan/ecom-authentication/internal/shared"
 	"go.uber.org/dig"
+	"unicode"
+	"unicode/utf8"
 )
 
-const PrefixAPI = "/api/auth"
+const (
+	PrefixAPI = "/api/auth"
+
+	SignUpAPI = PrefixAPI + "/sign-up"
+)
 
 type CustomValidator struct {
 	validator *validator.Validate
@@ -26,9 +32,46 @@ func (cv *CustomValidator) Validate(i interface{}) error {
 func (h *Holder) RegisterRoutes() {
 	var app = h.Deps.Server
 
-	app.Validator = &CustomValidator{validator: validator.New()}
+	newValidator := initValidator()
+	app.Validator = &CustomValidator{validator: newValidator}
+
 	app.Use(middleware.Recover())
 	app.Use(middleware.CORS())
 
-	app.POST(PrefixAPI, h.Auth.Post)
+	app.POST(SignUpAPI, h.Auth.SignUp)
+}
+
+func initValidator() *validator.Validate {
+	v := validator.New()
+	_ = v.RegisterValidation("password", func(fl validator.FieldLevel) bool {
+		var (
+			hasNumber      = false
+			hasSpecialChar = false
+			hasLetter      = false
+			hasSuitableLen = false
+		)
+
+		password := fl.Field().String()
+
+		if utf8.RuneCountInString(password) <= 30 || utf8.RuneCountInString(password) >= 6 {
+			hasSuitableLen = true
+		}
+
+		for _, c := range password {
+			switch {
+			case unicode.IsNumber(c):
+				hasNumber = true
+			case unicode.IsPunct(c) || unicode.IsSymbol(c):
+				hasSpecialChar = true
+			case unicode.IsLetter(c) || c == ' ':
+				hasLetter = true
+			default:
+				return false
+			}
+		}
+
+		return hasNumber && hasSpecialChar && hasLetter && hasSuitableLen
+	})
+
+	return v
 }

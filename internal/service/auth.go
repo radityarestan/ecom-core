@@ -2,15 +2,22 @@ package service
 
 import (
 	"context"
+	"encoding/base32"
 	"github.com/radityarestan/ecom-authentication/internal/entity"
 	"github.com/radityarestan/ecom-authentication/internal/repository"
 	"github.com/radityarestan/ecom-authentication/internal/shared"
 	"github.com/radityarestan/ecom-authentication/internal/shared/dto"
+	"golang.org/x/crypto/bcrypt"
+	"gorm.io/gorm"
+)
+
+const (
+	FrontEndURLVerify = "https://ecommerce-clone.com/verify/"
 )
 
 type (
 	Auth interface {
-		CreateUser(ctx context.Context, req *dto.TestRequest) (*dto.TestResponse, error)
+		SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.SignUpResponse, error)
 	}
 
 	authService struct {
@@ -19,18 +26,45 @@ type (
 	}
 )
 
-func (a *authService) CreateUser(ctx context.Context, req *dto.TestRequest) (*dto.TestResponse, error) {
+func (a *authService) SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.SignUpResponse, error) {
 	var orm = a.deps.Database.WithContext(ctx)
-	userCreated, err := a.repo.CreateUser(orm, &entity.User{Name: req.Name})
 
+	oldUser, err := a.repo.FindUserByEmail(orm, req.Email)
 	if err != nil {
-		a.deps.Logger.Errorf("Failed to create user: %v", err)
-		return nil, err
+		if err != gorm.ErrRecordNotFound {
+			a.deps.Logger.Errorf("Error when find user by email: %v", err)
+			return nil, dto.ErrFindUserFailed
+		}
 	}
 
-	return &dto.TestResponse{
-		ID:   userCreated.ID,
-		Name: userCreated.Name,
+	if oldUser != nil {
+		a.deps.Logger.Errorf("User already exists")
+		return nil, dto.ErrUserAlreadyExists
+	}
+
+	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	hashedPasswordString := string(hashedPassword)
+	hashedEmailString := base32.StdEncoding.EncodeToString([]byte(req.Email))
+
+	var user = &entity.User{
+		Name:             req.Name,
+		Email:            req.Email,
+		Password:         hashedPasswordString,
+		Photo:            "default.jpg",
+		VerificationCode: hashedEmailString,
+		IsVerified:       false,
+	}
+
+	userCreated, err := a.repo.CreateUser(orm, user)
+	if err != nil {
+		a.deps.Logger.Errorf("Failed to create user: %v", err)
+		return nil, dto.ErrCreateUserFailed
+	}
+
+	return &dto.SignUpResponse{
+		ID:           userCreated.ID,
+		Email:        userCreated.Email,
+		Verification: FrontEndURLVerify + userCreated.VerificationCode,
 	}, nil
 
 }
