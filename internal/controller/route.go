@@ -13,6 +13,7 @@ const (
 	PrefixAPI = "/api/auth"
 
 	SignUpAPI = PrefixAPI + "/sign-up"
+	VerifyAPI = PrefixAPI + "/verify/:code"
 )
 
 type CustomValidator struct {
@@ -39,6 +40,7 @@ func (h *Holder) RegisterRoutes() {
 	app.Use(middleware.CORS())
 
 	app.POST(SignUpAPI, h.Auth.SignUp)
+	app.GET(VerifyAPI, h.Auth.Verify)
 }
 
 func initValidator() *validator.Validate {

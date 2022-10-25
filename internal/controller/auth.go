@@ -47,3 +47,29 @@ func (impl *Auth) SignUp(c echo.Context) error {
 		Data:    res,
 	})
 }
+
+func (impl *Auth) Verify(c echo.Context) error {
+	var (
+		ctx  = c.Request().Context()
+		code = c.Param("code")
+	)
+
+	if code == "" {
+		return c.JSON(http.StatusBadRequest, dto.Response{
+			Status:  dto.StatusError,
+			Message: dto.ErrInvalidCode.Error(),
+		})
+	}
+
+	if err := impl.Service.Auth.VerifyEmail(ctx, code); err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Status:  dto.StatusSuccess,
+		Message: dto.VerifyEmailSuccess,
+	})
+}

@@ -9,6 +9,7 @@ type (
 	Auth interface {
 		FindUserByEmail(orm *gorm.DB, email string) (*entity.User, error)
 		CreateUser(orm *gorm.DB, user *entity.User) (*entity.User, error)
+		UpdateUserVerified(orm *gorm.DB, code string) error
 	}
 
 	authRepo struct{}
@@ -29,6 +30,14 @@ func (a *authRepo) CreateUser(orm *gorm.DB, user *entity.User) (*entity.User, er
 	}
 
 	return user, nil
+}
+
+func (a *authRepo) UpdateUserVerified(orm *gorm.DB, code string) error {
+	if err := orm.Model(&entity.User{}).Where("verification_code = ?", code).Update("is_verified", true).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func NewAuth() (Auth, error) {

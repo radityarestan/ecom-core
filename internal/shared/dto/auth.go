@@ -3,13 +3,16 @@ package dto
 import "errors"
 
 const (
-	CreateUserSuccess = "user created successfully"
+	CreateUserSuccess  = "user created successfully"
+	VerifyEmailSuccess = "email verified successfully"
 )
 
 var (
 	ErrFindUserFailed    = errors.New("error when find user by email")
 	ErrUserAlreadyExists = errors.New("user already exists")
 	ErrCreateUserFailed  = errors.New("failed to create user")
+	ErrUpdateUserFailed  = errors.New("failed to update user")
+	ErrInvalidCode       = errors.New("invalid verification code")
 )
 
 type (

@@ -12,12 +12,13 @@ import (
 )
 
 const (
-	FrontEndURLVerify = "https://ecommerce-clone.com/verify/"
+	FrontEndURLVerify = "https://ceritanya-front-end.com/verify/"
 )
 
 type (
 	Auth interface {
 		SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.SignUpResponse, error)
+		VerifyEmail(ctx context.Context, code string) error
 	}
 
 	authService struct {
@@ -62,7 +63,7 @@ func (a *authService) SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.
 	}
 
 	go func() {
-		err := a.deps.NSQProducer.Publish([]byte(userCreated.Email))
+		err := a.deps.NSQProducer.Publish([]byte(userCreated.VerificationCode))
 		if err != nil {
 			a.deps.Logger.Errorf("Failed to publish to NSQ: %v", err)
 			return
@@ -75,6 +76,17 @@ func (a *authService) SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.
 		Verification: FrontEndURLVerify + userCreated.VerificationCode,
 	}, nil
 
+}
+
+func (a *authService) VerifyEmail(ctx context.Context, code string) error {
+	var orm = a.deps.Database.WithContext(ctx)
+
+	if err := a.repo.UpdateUserVerified(orm, code); err != nil {
+		a.deps.Logger.Errorf("Failed to update user verified: %v", err)
+		return dto.ErrUpdateUserFailed
+	}
+
+	return nil
 }
 
 func NewAuth(deps shared.Deps, repo repository.Auth) (Auth, error) {
