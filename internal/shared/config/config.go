@@ -16,9 +16,17 @@ type DatabaseConfig struct {
 	Timezone string `mapstructure:"TIMEZONE"`
 }
 
+type NSQConfig struct {
+	Host    string `mapstructure:"HOST"`
+	Port    string `mapstructure:"PORT"`
+	Topic   string `mapstructure:"TOPIC"`
+	Channel string `mapstructure:"CHANNEL"`
+}
+
 type Config struct {
 	Server   ServerConfig   `mapstructure:"SERVER"`
 	Database DatabaseConfig `mapstructure:"DATABASE"`
+	NSQ      NSQConfig      `mapstructure:"NSQ"`
 }
 
 func NewConfig() (*Config, error) {

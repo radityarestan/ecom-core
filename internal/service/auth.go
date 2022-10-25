@@ -61,6 +61,14 @@ func (a *authService) SignUp(ctx context.Context, req *dto.SignUpRequest) (*dto.
 		return nil, dto.ErrCreateUserFailed
 	}
 
+	go func() {
+		err := a.deps.NSQProducer.Publish([]byte(userCreated.Email))
+		if err != nil {
+			a.deps.Logger.Errorf("Failed to publish to NSQ: %v", err)
+			return
+		}
+	}()
+
 	return &dto.SignUpResponse{
 		ID:           userCreated.ID,
 		Email:        userCreated.Email,

@@ -20,6 +20,10 @@ func init() {
 		panic(err)
 	}
 
+	if err := Container.Provide(NewNSQProducer); err != nil {
+		panic(err)
+	}
+
 	if err := Container.Provide(NewLogger); err != nil {
 		panic(err)
 	}
