@@ -13,6 +13,7 @@ const (
 	PrefixAPI = "/api/auth"
 
 	SignUpAPI = PrefixAPI + "/sign-up"
+	SignInAPI = PrefixAPI + "/sign-in"
 	VerifyAPI = PrefixAPI + "/verify/:code"
 )
 
@@ -40,6 +41,7 @@ func (h *Holder) RegisterRoutes() {
 	app.Use(middleware.CORS())
 
 	app.POST(SignUpAPI, h.Auth.SignUp)
+	app.POST(SignInAPI, h.Auth.SignIn)
 	app.GET(VerifyAPI, h.Auth.Verify)
 }
 

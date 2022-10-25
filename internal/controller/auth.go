@@ -13,6 +13,41 @@ type Auth struct {
 	Service service.Holder
 }
 
+func (impl *Auth) SignIn(c echo.Context) error {
+	var (
+		ctx = c.Request().Context()
+		req = dto.SignInRequest{}
+	)
+
+	if err := bind(c, &req); err != nil {
+		return c.JSON(http.StatusBadRequest, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	res, err := impl.Service.Auth.SignIn(ctx, &req)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	if err := c.Validate(res); err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Status:  dto.StatusSuccess,
+		Message: dto.SignInSuccess,
+		Data:    res,
+	})
+}
+
 func (impl *Auth) SignUp(c echo.Context) error {
 	var (
 		ctx = c.Request().Context()
@@ -61,7 +96,15 @@ func (impl *Auth) Verify(c echo.Context) error {
 		})
 	}
 
-	if err := impl.Service.Auth.VerifyEmail(ctx, code); err != nil {
+	res, err := impl.Service.Auth.VerifyEmail(ctx, code)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	if err := c.Validate(res); err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -71,5 +114,6 @@ func (impl *Auth) Verify(c echo.Context) error {
 	return c.JSON(http.StatusOK, dto.Response{
 		Status:  dto.StatusSuccess,
 		Message: dto.VerifyEmailSuccess,
+		Data:    res,
 	})
 }
