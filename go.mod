@@ -1,4 +1,4 @@
-module github.com/radityarestan/ecom-authentication
+module github.com/radityarestan/ecom-core
 
 go 1.18
 

@@ -1,9 +1,9 @@
 package di
 
 import (
-	"github.com/radityarestan/ecom-authentication/internal/repository"
-	"github.com/radityarestan/ecom-authentication/internal/service"
-	"github.com/radityarestan/ecom-authentication/internal/shared/config"
+	"github.com/radityarestan/ecom-core/internal/repository"
+	"github.com/radityarestan/ecom-core/internal/service"
+	"github.com/radityarestan/ecom-core/internal/shared/config"
 	"go.uber.org/dig"
 )
 

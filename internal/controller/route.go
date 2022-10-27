@@ -3,7 +3,7 @@ package controller
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4/middleware"
-	"github.com/radityarestan/ecom-authentication/internal/shared"
+	"github.com/radityarestan/ecom-core/internal/shared"
 	"go.uber.org/dig"
 	"unicode"
 	"unicode/utf8"

@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"github.com/radityarestan/ecom-authentication/internal/entity"
+	"github.com/radityarestan/ecom-core/internal/entity"
 	"gorm.io/gorm"
 )
 

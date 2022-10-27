@@ -2,8 +2,8 @@ package shared
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/radityarestan/ecom-authentication/internal/pkg"
-	"github.com/radityarestan/ecom-authentication/internal/shared/config"
+	"github.com/radityarestan/ecom-core/internal/pkg"
+	"github.com/radityarestan/ecom-core/internal/shared/config"
 	log "github.com/sirupsen/logrus"
 	"go.uber.org/dig"
 	"gorm.io/gorm"

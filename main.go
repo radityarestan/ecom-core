@@ -2,9 +2,9 @@ package main
 
 import (
 	"fmt"
-	"github.com/radityarestan/ecom-authentication/internal/controller"
-	"github.com/radityarestan/ecom-authentication/internal/di"
-	"github.com/radityarestan/ecom-authentication/internal/shared"
+	"github.com/radityarestan/ecom-core/internal/controller"
+	"github.com/radityarestan/ecom-core/internal/di"
+	"github.com/radityarestan/ecom-core/internal/shared"
 	"os"
 	"os/signal"
 	"syscall"

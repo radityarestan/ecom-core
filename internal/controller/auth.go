@@ -2,8 +2,8 @@ package controller
 
 import (
 	"github.com/labstack/echo/v4"
-	"github.com/radityarestan/ecom-authentication/internal/service"
-	"github.com/radityarestan/ecom-authentication/internal/shared/dto"
+	"github.com/radityarestan/ecom-core/internal/service"
+	"github.com/radityarestan/ecom-core/internal/shared/dto"
 	"go.uber.org/dig"
 	"net/http"
 )

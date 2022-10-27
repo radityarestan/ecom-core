@@ -2,8 +2,8 @@ package di
 
 import (
 	"github.com/nsqio/go-nsq"
-	"github.com/radityarestan/ecom-authentication/internal/pkg"
-	"github.com/radityarestan/ecom-authentication/internal/shared/config"
+	"github.com/radityarestan/ecom-core/internal/pkg"
+	"github.com/radityarestan/ecom-core/internal/shared/config"
 )
 
 func NewNSQProducer(conf *config.Config) (np *pkg.NSQProducer, err error) {

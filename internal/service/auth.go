@@ -3,10 +3,10 @@ package service
 import (
 	"context"
 	"encoding/base32"
-	"github.com/radityarestan/ecom-authentication/internal/entity"
-	"github.com/radityarestan/ecom-authentication/internal/repository"
-	"github.com/radityarestan/ecom-authentication/internal/shared"
-	"github.com/radityarestan/ecom-authentication/internal/shared/dto"
+	"github.com/radityarestan/ecom-core/internal/entity"
+	"github.com/radityarestan/ecom-core/internal/repository"
+	"github.com/radityarestan/ecom-core/internal/shared"
+	"github.com/radityarestan/ecom-core/internal/shared/dto"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

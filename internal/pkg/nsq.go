@@ -2,7 +2,7 @@ package pkg
 
 import (
 	"github.com/nsqio/go-nsq"
-	"github.com/radityarestan/ecom-authentication/internal/shared/config"
+	"github.com/radityarestan/ecom-core/internal/shared/config"
 )
 
 type NSQProducer struct {

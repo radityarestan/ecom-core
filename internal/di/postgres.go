@@ -2,8 +2,8 @@ package di
 
 import (
 	"fmt"
-	"github.com/radityarestan/ecom-authentication/internal/entity"
-	"github.com/radityarestan/ecom-authentication/internal/shared/config"
+	"github.com/radityarestan/ecom-core/internal/entity"
+	"github.com/radityarestan/ecom-core/internal/shared/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
