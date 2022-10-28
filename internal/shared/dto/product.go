@@ -10,11 +10,11 @@ const (
 
 type (
 	CreateProductRequest struct {
-		Name       string `json:"name" validate:"required"`
-		Detail     string `json:"detail" validate:"required"`
-		Stock      uint   `json:"stock" validate:"required"`
-		UserID     uint   `json:"user_id" validate:"required"`
-		CategoryID uint   `json:"category_id" validate:"required"`
+		Name       string  `json:"name" validate:"required"`
+		Detail     string  `json:"detail" validate:"required"`
+		Price      float64 `json:"price" validate:"required"`
+		Stock      uint    `json:"stock" validate:"required"`
+		CategoryID uint    `json:"category_id" validate:"required"`
 	}
 
 	CreateProductResponse struct {

@@ -13,7 +13,7 @@ type User struct {
 	VerificationCode string `gorm:"column:verification_code;not null"`
 	IsVerified       bool   `gorm:"column:is_verified;not null"`
 
-	Products []Product
+	Products []Product `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (impl *User) TableName() string {

@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"context"
 	"github.com/labstack/echo/v4"
 	"github.com/radityarestan/ecom-core/internal/service"
 	"github.com/radityarestan/ecom-core/internal/shared/dto"
@@ -16,7 +17,7 @@ type Product struct {
 
 func (impl *Product) Create(c echo.Context) error {
 	var (
-		ctx = c.Request().Context()
+		ctx = context.WithValue(c.Request().Context(), "user_id", c.Get("user_id"))
 		req = dto.CreateProductRequest{}
 	)
 

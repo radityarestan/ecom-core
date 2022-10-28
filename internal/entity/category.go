@@ -6,7 +6,7 @@ type Category struct {
 	gorm.Model
 	Name string `gorm:"column:name;not null"`
 
-	ProductID uint
+	Products []Product `gorm:"constraint:OnUpdate:CASCADE,OnDelete:CASCADE;"`
 }
 
 func (impl *Category) TableName() string {
