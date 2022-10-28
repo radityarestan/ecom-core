@@ -6,13 +6,13 @@ import (
 )
 
 type Claims struct {
-	ID int64
+	ID uint
 	jwt.StandardClaims
 }
 
 var jwtKey = []byte("my_secret_key")
 
-func (a *authService) generateToken(userID int64) (string, error) {
+func (a *authService) generateToken(userID uint) (string, error) {
 	expTime := time.Now().Add(time.Hour * 24).Unix()
 
 	claims := &Claims{

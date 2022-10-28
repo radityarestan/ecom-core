@@ -16,6 +16,13 @@ type DatabaseConfig struct {
 	Timezone string `mapstructure:"TIMEZONE"`
 }
 
+type RedisConfig struct {
+	Host     string `mapstructure:"HOST"`
+	Port     string `mapstructure:"PORT"`
+	Password string `mapstructure:"PASSWORD"`
+	DB       int    `mapstructure:"DB"`
+}
+
 type NSQConfig struct {
 	Host    string `mapstructure:"HOST"`
 	Port    string `mapstructure:"PORT"`
@@ -26,6 +33,7 @@ type NSQConfig struct {
 type Config struct {
 	Server   ServerConfig   `mapstructure:"SERVER"`
 	Database DatabaseConfig `mapstructure:"DATABASE"`
+	Redis    RedisConfig    `mapstructure:"REDIS"`
 	NSQ      NSQConfig      `mapstructure:"NSQ"`
 }
 

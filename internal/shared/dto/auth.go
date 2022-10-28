@@ -28,7 +28,7 @@ type (
 	}
 
 	SignUpResponse struct {
-		ID           int64  `json:"id" validate:"required"`
+		ID           uint   `json:"id" validate:"required"`
 		Email        string `json:"email" validate:"required,email"`
 		Verification string `json:"verification" validate:"required"`
 	}
