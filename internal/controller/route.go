@@ -3,6 +3,7 @@ package controller
 import (
 	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4/middleware"
+	customMiddleware "github.com/radityarestan/ecom-core/internal/middleware"
 	"github.com/radityarestan/ecom-core/internal/shared"
 	"go.uber.org/dig"
 	"unicode"
@@ -13,13 +14,12 @@ const (
 	PrefixAuthAPI    = "/api/auth"
 	PrefixProductAPI = "/api/product"
 
-	SignUpAPI = PrefixAuthAPI + "/sign-up"
-	SignInAPI = PrefixAuthAPI + "/sign-in"
-	VerifyAPI = PrefixAuthAPI + "/verify/:code"
+	SignUpAPI = "/sign-up"
+	SignInAPI = "/sign-in"
+	VerifyAPI = "/verify/:code"
 
-	ProductAPI       = PrefixProductAPI
-	ProductSearchAPI = PrefixProductAPI + "/search"
-	ProductDetailAPI = PrefixProductAPI + "/:id"
+	ProductSearchAPI = "/search"
+	ProductDetailAPI = "/:id"
 )
 
 type CustomValidator struct {
@@ -46,14 +46,24 @@ func (h *Holder) RegisterRoutes() {
 	app.Use(middleware.Recover())
 	app.Use(middleware.CORS())
 
-	app.POST(SignUpAPI, h.Auth.SignUp)
-	app.POST(SignInAPI, h.Auth.SignIn)
-	app.GET(VerifyAPI, h.Auth.Verify)
+	authRoutes := app.Group(PrefixAuthAPI)
+	{
+		authRoutes.POST(SignUpAPI, h.Auth.SignUp)
+		authRoutes.POST(SignInAPI, h.Auth.SignIn)
+		authRoutes.GET(VerifyAPI, h.Auth.Verify)
+	}
 
-	app.POST(ProductAPI, h.Product.Create)
-	app.GET(ProductAPI, h.Product.Catalog)
-	app.GET(ProductSearchAPI, h.Product.Search)
-	app.GET(ProductDetailAPI, h.Product.Detail)
+	app.Use(customMiddleware.AuthMiddleware)
+	{
+		productRoutes := app.Group(PrefixProductAPI)
+		{
+			productRoutes.POST("", h.Product.Create)
+			productRoutes.GET("", h.Product.Catalog)
+			productRoutes.GET(ProductSearchAPI, h.Product.Search)
+			productRoutes.GET(ProductDetailAPI, h.Product.Detail)
+		}
+	}
+
 }
 
 func initValidator() *validator.Validate {

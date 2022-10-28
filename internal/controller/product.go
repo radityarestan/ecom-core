@@ -52,7 +52,7 @@ func (impl *Product) Create(c echo.Context) error {
 func (impl *Product) Catalog(c echo.Context) error {
 	var (
 		ctx    = c.Request().Context()
-		userID = getUserIDFromJWT(c)
+		userID = c.Get("user_id").(uint)
 	)
 
 	res, err := impl.Service.Product.GetBaseProducts(ctx, userID)

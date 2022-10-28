@@ -6,6 +6,8 @@ const (
 	CreateUserSuccess  = "user created successfully"
 	VerifyEmailSuccess = "email verified successfully"
 	SignInSuccess      = "sign in successfully"
+
+	Unauthorized = "You are not authorized to access this resource"
 )
 
 var (
