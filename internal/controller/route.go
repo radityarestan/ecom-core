@@ -53,15 +53,13 @@ func (h *Holder) RegisterRoutes() {
 		authRoutes.GET(VerifyAPI, h.Auth.Verify)
 	}
 
-	app.Use(customMiddleware.AuthMiddleware)
+	productRoutes := app.Group(PrefixProductAPI)
+	productRoutes.Use(customMiddleware.AuthMiddleware)
 	{
-		productRoutes := app.Group(PrefixProductAPI)
-		{
-			productRoutes.POST("", h.Product.Create)
-			productRoutes.GET("", h.Product.Catalog)
-			productRoutes.GET(ProductSearchAPI, h.Product.Search)
-			productRoutes.GET(ProductDetailAPI, h.Product.Detail)
-		}
+		productRoutes.POST("", h.Product.Create)
+		productRoutes.GET("", h.Product.Catalog)
+		productRoutes.GET(ProductSearchAPI, h.Product.Search)
+		productRoutes.GET(ProductDetailAPI, h.Product.Detail)
 	}
 
 }
