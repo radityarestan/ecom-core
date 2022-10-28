@@ -10,7 +10,7 @@ type Claims struct {
 	jwt.StandardClaims
 }
 
-var jwtKey = []byte("my_secret_key")
+var JWTKey = []byte("my_secret_key")
 
 func (a *authService) generateToken(userID uint) (string, error) {
 	expTime := time.Now().Add(time.Hour * 24).Unix()
@@ -23,5 +23,5 @@ func (a *authService) generateToken(userID uint) (string, error) {
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtKey)
+	return token.SignedString(JWTKey)
 }

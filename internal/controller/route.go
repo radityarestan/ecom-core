@@ -10,11 +10,16 @@ import (
 )
 
 const (
-	PrefixAPI = "/api/auth"
+	PrefixAuthAPI    = "/api/auth"
+	PrefixProductAPI = "/api/product"
 
-	SignUpAPI = PrefixAPI + "/sign-up"
-	SignInAPI = PrefixAPI + "/sign-in"
-	VerifyAPI = PrefixAPI + "/verify/:code"
+	SignUpAPI = PrefixAuthAPI + "/sign-up"
+	SignInAPI = PrefixAuthAPI + "/sign-in"
+	VerifyAPI = PrefixAuthAPI + "/verify/:code"
+
+	ProductAPI       = PrefixProductAPI
+	ProductSearchAPI = PrefixProductAPI + "/search"
+	ProductDetailAPI = PrefixProductAPI + "/:id"
 )
 
 type CustomValidator struct {
@@ -23,8 +28,9 @@ type CustomValidator struct {
 
 type Holder struct {
 	dig.In
-	Deps shared.Deps
-	Auth Auth
+	Deps    shared.Deps
+	Auth    Auth
+	Product Product
 }
 
 func (cv *CustomValidator) Validate(i interface{}) error {
@@ -43,6 +49,11 @@ func (h *Holder) RegisterRoutes() {
 	app.POST(SignUpAPI, h.Auth.SignUp)
 	app.POST(SignInAPI, h.Auth.SignIn)
 	app.GET(VerifyAPI, h.Auth.Verify)
+
+	app.POST(ProductAPI, h.Product.Create)
+	app.GET(ProductAPI, h.Product.Catalog)
+	app.GET(ProductSearchAPI, h.Product.Search)
+	app.GET(ProductDetailAPI, h.Product.Detail)
 }
 
 func initValidator() *validator.Validate {

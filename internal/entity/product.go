@@ -13,6 +13,7 @@ type Product struct {
 	Detail       string  `gorm:"column:detail;not null"`
 	Photo        string  `gorm:"column:photo;not null"`
 	Rating       float32 `gorm:"column:rating;not null"`
+	Price        float64 `gorm:"column:price;not null"`
 
 	UserID   uint
 	Category Category
