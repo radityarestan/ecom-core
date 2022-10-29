@@ -24,18 +24,22 @@ func NewPostgres(conf *config.Config) (*gorm.DB, error) {
 		return nil, err
 	}
 
+	categoryExist := db.Migrator().HasTable(&entity.Category{})
+
 	if err := db.AutoMigrate(&entity.User{}, &entity.Category{}, &entity.Product{}); err != nil {
 		return nil, err
 	}
 
-	if err := loadData(db); err != nil {
-		return nil, err
+	if !categoryExist {
+		if err := seed(db); err != nil {
+			return nil, err
+		}
 	}
 
 	return db, nil
 }
 
-func loadData(orm *gorm.DB) error {
+func seed(orm *gorm.DB) error {
 	// load category
 	if err := orm.Create(&entity.Category{
 		Name: "Fashion",

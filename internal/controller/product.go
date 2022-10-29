@@ -53,10 +53,20 @@ func (impl *Product) Create(c echo.Context) error {
 func (impl *Product) Catalog(c echo.Context) error {
 	var (
 		ctx    = c.Request().Context()
-		userID = c.Get("user_id").(uint)
+		userID = c.Get("user_id")
+		limit  = c.QueryParam("lmt")
+		offset = c.QueryParam("oft")
 	)
 
-	res, err := impl.Service.Product.GetBaseProducts(ctx, userID)
+	paramInt, err := checkIntParam(limit, offset)
+	if err != nil {
+		return c.JSON(http.StatusBadRequest, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	res, err := impl.Service.Product.GetProductCatalog(ctx, userID.(uint), paramInt[0], paramInt[1])
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
@@ -79,25 +89,23 @@ func (impl *Product) Catalog(c echo.Context) error {
 }
 
 func (impl *Product) Search(c echo.Context) error {
-	var ctx = c.Request().Context()
-	search := c.QueryParam("search")
+	var (
+		ctx    = c.Request().Context()
+		search = c.QueryParam("q")
+		limit  = c.QueryParam("lmt")
+		offset = c.QueryParam("oft")
+	)
 
-	if search == "" {
-		return c.JSON(http.StatusBadRequest, dto.Response{
-			Status:  dto.StatusError,
-			Message: dto.SearchProductError,
-		})
-	}
-
-	res, err := impl.Service.Product.FindProducts(ctx, search)
+	paramInt, err := checkIntParam(limit, offset)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, dto.Response{
+		return c.JSON(http.StatusBadRequest, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
 		})
 	}
 
-	if err := c.Validate(res); err != nil {
+	res, err := impl.Service.Product.FindProducts(ctx, search, paramInt[0], paramInt[1])
+	if err != nil {
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -113,7 +121,7 @@ func (impl *Product) Search(c echo.Context) error {
 
 func (impl *Product) Detail(c echo.Context) error {
 	var (
-		ctx = c.Request().Context()
+		ctx = context.WithValue(c.Request().Context(), "user_id", c.Get("user_id"))
 		req = c.Param("id")
 	)
 

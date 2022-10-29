@@ -1,6 +1,7 @@
 package shared
 
 import (
+	"github.com/go-redis/redis/v8"
 	"github.com/labstack/echo/v4"
 	"github.com/radityarestan/ecom-core/internal/pkg"
 	"github.com/radityarestan/ecom-core/internal/shared/config"
@@ -15,6 +16,7 @@ type Deps struct {
 	Logger      *log.Logger
 	Server      *echo.Echo
 	Database    *gorm.DB
+	Redis       *redis.Client
 	NSQProducer *pkg.NSQProducer
 }
 
@@ -30,6 +32,10 @@ func (d *Deps) Close() {
 
 	if err := db.Close(); err != nil {
 		d.Logger.Errorf("Failed to close database connection: %v", err)
+	}
+
+	if err := d.Redis.Close(); err != nil {
+		d.Logger.Errorf("Failed to close redis connection: %v", err)
 	}
 
 	d.NSQProducer.Stop()
