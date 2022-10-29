@@ -1,0 +1,40 @@
+name: backend-deployment
+
+on:
+  push:
+    branches:
+      - master
+
+env:
+  SERVICE: ecommerce-core
+  REGION: asia-southeast2
+
+jobs:
+  deploy:
+    name: Cloud Run Deployment
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Create app.env
+        run: |
+          echo -e '${{ secrets.ENV }}' >> app.env
+      - name: Auth to GCP
+        uses: 'google-github-actions/auth@v0'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+      - name: Configure Docker
+        run: |
+          gcloud auth configure-docker
+      - name: Build Image from Dockerfile
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE }}:latest .
+      - name: Push to GCP Container Registry
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE }}:latest
+      - name: Deploy to Cloud Run
+        uses: 'google-github-actions/deploy-cloudrun@v0'
+        with:
+          service: '${{ env.SERVICE }}'
+          image: 'gcr.io/${{ secrets.GCP_PROJECT_ID }}/${{ env.SERVICE }}'
+          region: '${{ env.REGION }}'
