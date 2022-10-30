@@ -22,12 +22,10 @@ I would recommend you to use docker-compose to build those tech stack. You can f
 ## How the app works
 For the message broker: 
 This service will be publish the message to be consume on ecom-email service. Then, the ecom-email service will send the email to the user.
-For the PostgresSQL and redis:
 
-PostgresSQL will be used for the main database. Redis will be used for caching the data to make the app faster.
-For the prometheus and grafana:
+For the PostgresSQL and redis: PostgresSQL will be used for the main database. Redis will be used for caching the data to make the app faster.
 
-Prometheus is a time series database. It will be used to monitor the app. Grafana is a dashboard for visualizing how the data looks like in prometheus.
+For the prometheus and grafana: Prometheus is a time series database. It will be used to monitor the app. Grafana is a dashboard for visualizing how the data looks like in prometheus.
 In this application, we are gonna use this as a middleware to monitor the api.
 
 ## Application Overview
