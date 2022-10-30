@@ -20,7 +20,7 @@ I would recommend you to use docker-compose to build those tech stack. You can f
 
 ## How the app works
 1. Verify with send email address notification after user registration
-![Verifying Account](https://github.com/radityarestan/ecom-core/blob/master/verify-email.png?raw=true)
+![Verifying Account](https://github.com/radityarestan/ecom-core/blob/master/demo/verify-email.png?raw=true)
 2. Something
 
 
