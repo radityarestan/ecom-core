@@ -20,8 +20,9 @@ const (
 	SignInAPI = "/sign-in"
 	VerifyAPI = "/verify/:code"
 
-	ProductSearchAPI = "/search"
-	ProductDetailAPI = "/:id"
+	ProductUploadPhotoAPI = "/upload"
+	ProductSearchAPI      = "/search"
+	ProductDetailAPI      = "/:id"
 )
 
 type CustomValidator struct {
@@ -63,6 +64,7 @@ func (h *Holder) RegisterRoutes() {
 	{
 		productRoutes.POST("", h.Product.Create)
 		productRoutes.GET("", h.Product.Catalog)
+		productRoutes.POST(ProductUploadPhotoAPI, h.Product.UploadPhoto)
 		productRoutes.GET(ProductSearchAPI, h.Product.Search)
 		productRoutes.GET(ProductDetailAPI, h.Product.Detail)
 	}

@@ -19,6 +19,9 @@ jobs:
       - name: Create app.env
         run: |
           echo -e '${{ secrets.ENV }}' >> app.env
+      - name: Create gcp-credential.json
+        run: |
+          echo -e '${{ secrets.GCP_SA_KEY }}' >> gcp-credential.json
       - name: Auth to GCP
         uses: 'google-github-actions/auth@v0'
         with:

@@ -1,10 +1,15 @@
 package dto
 
 const (
-	CreateProductSuccess  = "Product created successfully"
-	SearchProductSuccess  = "Product search success"
-	DetailProductSuccess  = "Find product detail success"
-	CatalogProductSuccess = "Find product catalog success"
+	CreateProductSuccess      = "Product created successfully"
+	UploadProductPhotoSuccess = "Product photo uploaded successfully"
+	SearchProductSuccess      = "Product search success"
+	DetailProductSuccess      = "Find product detail success"
+	CatalogProductSuccess     = "Find product catalog success"
+
+	FileSizeExceeded = "File size exceeded, not more than 2MB"
+
+	ProductPhotoURL = "https://storage.googleapis.com/backend1-bucket/products/"
 )
 
 type (

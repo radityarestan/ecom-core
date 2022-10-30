@@ -30,11 +30,19 @@ type NSQConfig struct {
 	Channel string `mapstructure:"CHANNEL"`
 }
 
+type GCPConfig struct {
+	Credential         string `mapstructure:"CREDENTIAL"`
+	ProjectID          string `mapstructure:"PROJECT_ID"`
+	BucketName         string `mapstructure:"BUCKET_NAME"`
+	ProductStoragePath string `mapstructure:"PRODUCT_STORAGE_PATH"`
+}
+
 type Config struct {
 	Server   ServerConfig   `mapstructure:"SERVER"`
 	Database DatabaseConfig `mapstructure:"DATABASE"`
 	Redis    RedisConfig    `mapstructure:"REDIS"`
 	NSQ      NSQConfig      `mapstructure:"NSQ"`
+	GCP      GCPConfig      `mapstructure:"GCP"`
 }
 
 func NewConfig() (*Config, error) {

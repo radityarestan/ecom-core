@@ -18,6 +18,7 @@ type Deps struct {
 	Database    *gorm.DB
 	Redis       *redis.Client
 	NSQProducer *pkg.NSQProducer
+	Storage     *pkg.Storage
 }
 
 func (d *Deps) Close() {
@@ -36,6 +37,10 @@ func (d *Deps) Close() {
 
 	if err := d.Redis.Close(); err != nil {
 		d.Logger.Errorf("Failed to close redis connection: %v", err)
+	}
+
+	if err := d.Storage.Cl.Close(); err != nil {
+		d.Logger.Errorf("Failed to close storage connection: %v", err)
 	}
 
 	d.NSQProducer.Stop()

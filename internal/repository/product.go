@@ -14,6 +14,7 @@ import (
 type (
 	Product interface {
 		CreateProduct(orm *gorm.DB, product *entity.Product) (*entity.Product, error)
+		UpdateProductPhoto(orm *gorm.DB, id uint, fileName string) error
 		GetBaseProducts(orm *gorm.DB, rc *redis.Client, limit int, offset int) ([]*entity.Product, ResponseType, error)
 		FindProducts(orm *gorm.DB, rc *redis.Client, limit int, offset int, search string) ([]*entity.Product, ResponseType, error)
 		FindProductByID(orm *gorm.DB, rc *redis.Client, id uint) (*entity.Product, ResponseType, error)
@@ -34,6 +35,14 @@ func (p *productRepo) CreateProduct(orm *gorm.DB, product *entity.Product) (*ent
 	}
 
 	return product, nil
+}
+
+func (p *productRepo) UpdateProductPhoto(orm *gorm.DB, id uint, fileName string) error {
+	if err := orm.Model(&entity.Product{}).Where("id = ?", id).Update("photo", fileName).Error; err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (p *productRepo) GetBaseProducts(orm *gorm.DB, rc *redis.Client, limit int, offset int) ([]*entity.Product, ResponseType, error) {

@@ -28,6 +28,10 @@ func init() {
 		panic(err)
 	}
 
+	if err := Container.Provide(NewStorage); err != nil {
+		panic(err)
+	}
+
 	if err := Container.Provide(NewLogger); err != nil {
 		panic(err)
 	}

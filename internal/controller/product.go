@@ -53,6 +53,53 @@ func (impl *Product) Create(c echo.Context) error {
 	})
 }
 
+func (impl *Product) UploadPhoto(c echo.Context) error {
+	var (
+		ctx = c.Request().Context()
+		id  = c.FormValue("id")
+	)
+
+	params, err := checkIntParam(id)
+	if err != nil {
+		c.Set(dto.StatusError, err.Error())
+		return c.JSON(http.StatusBadRequest, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	f, err := c.FormFile("file")
+	if err != nil {
+		c.Set(dto.StatusError, err.Error())
+		return c.JSON(http.StatusBadRequest, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	// check file size
+	if f.Size > 2*1024*1024 {
+		c.Set(dto.StatusError, dto.FileSizeExceeded)
+		return c.JSON(http.StatusBadRequest, dto.Response{
+			Status:  dto.StatusError,
+			Message: dto.FileSizeExceeded,
+		})
+	}
+
+	if err := impl.Service.Product.UploadProductPhoto(ctx, f, uint(params[0])); err != nil {
+		c.Set(dto.StatusError, err.Error())
+		return c.JSON(http.StatusInternalServerError, dto.Response{
+			Status:  dto.StatusError,
+			Message: err.Error(),
+		})
+	}
+
+	return c.JSON(http.StatusOK, dto.Response{
+		Status:  dto.StatusSuccess,
+		Message: dto.UploadProductPhotoSuccess,
+	})
+}
+
 func (impl *Product) Catalog(c echo.Context) error {
 	var (
 		ctx    = c.Request().Context()

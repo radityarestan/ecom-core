@@ -2,16 +2,19 @@ package service
 
 import (
 	"context"
+	"fmt"
 	"github.com/radityarestan/ecom-core/internal/entity"
 	"github.com/radityarestan/ecom-core/internal/repository"
 	"github.com/radityarestan/ecom-core/internal/shared"
 	"github.com/radityarestan/ecom-core/internal/shared/dto"
+	"mime/multipart"
 	"strings"
 )
 
 type (
 	Product interface {
 		CreateProduct(ctx context.Context, req *dto.CreateProductRequest) (*dto.CreateProductResponse, error)
+		UploadProductPhoto(ctx context.Context, fileHeader *multipart.FileHeader, id uint) error
 		GetProductCatalog(ctx context.Context, userID uint, limit int, offset int) (*dto.ProductsResponse, error)
 		FindProducts(ctx context.Context, search string, limit int, offset int) ([]*dto.ProductOverviewResponse, error)
 		FindProductByID(ctx context.Context, id uint) (*dto.ProductDetailResponse, error)
@@ -50,6 +53,32 @@ func (p *productService) CreateProduct(ctx context.Context, req *dto.CreateProdu
 	}, nil
 }
 
+func (p *productService) UploadProductPhoto(ctx context.Context, fileHeader *multipart.FileHeader, id uint) error {
+	var (
+		orm = p.deps.Database.WithContext(ctx)
+	)
+
+	file, err := fileHeader.Open()
+	if err != nil {
+		p.deps.Logger.Error("failed to open file", err)
+		return err
+	}
+
+	fileName := fmt.Sprintf("%d-%s", id, strings.ReplaceAll(fileHeader.Filename, " ", "-"))
+	if err := p.deps.Storage.UploadFile(file, fileName); err != nil {
+		p.deps.Logger.Error("failed to upload file", err)
+		return err
+	}
+
+	if err := p.repo.UpdateProductPhoto(orm, id, fileName); err != nil {
+		p.deps.Logger.Error("failed to update product photo", err)
+		return err
+	}
+
+	return nil
+
+}
+
 func (p *productService) GetProductCatalog(ctx context.Context, userID uint, limit int, offset int) (*dto.ProductsResponse, error) {
 	var (
 		orm = p.deps.Database.WithContext(ctx)
@@ -79,7 +108,7 @@ func (p *productService) GetProductCatalog(ctx context.Context, userID uint, lim
 			Stock:  product.Stock,
 			Sold:   product.Sold,
 			Name:   product.Name,
-			Photo:  product.Photo,
+			Photo:  dto.ProductPhotoURL + product.Photo,
 			Rating: product.Rating,
 			Price:  product.Price,
 		})
@@ -91,7 +120,7 @@ func (p *productService) GetProductCatalog(ctx context.Context, userID uint, lim
 			Stock:  product.Stock,
 			Sold:   product.Sold,
 			Name:   product.Name,
-			Photo:  product.Photo,
+			Photo:  dto.ProductPhotoURL + product.Photo,
 			Rating: product.Rating,
 			Price:  product.Price,
 		})
@@ -133,7 +162,7 @@ func (p *productService) FindProducts(ctx context.Context, search string, limit 
 			Stock:  product.Stock,
 			Sold:   product.Sold,
 			Name:   product.Name,
-			Photo:  product.Photo,
+			Photo:  dto.ProductPhotoURL + product.Photo,
 			Rating: product.Rating,
 			Price:  product.Price,
 		})
@@ -188,7 +217,7 @@ func (p *productService) FindProductByID(ctx context.Context, id uint) (*dto.Pro
 		ID:           product.ID,
 		Name:         product.Name,
 		Detail:       product.Detail,
-		Photo:        product.Photo,
+		Photo:        dto.ProductPhotoURL + product.Photo,
 		Price:        product.Price,
 		Stock:        product.Stock,
 		Sold:         product.Sold,
