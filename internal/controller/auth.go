@@ -20,6 +20,7 @@ func (impl *Auth) SignIn(c echo.Context) error {
 	)
 
 	if err := bind(c, &req); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusBadRequest, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -28,6 +29,7 @@ func (impl *Auth) SignIn(c echo.Context) error {
 
 	res, err := impl.Service.Auth.SignIn(ctx, &req)
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -35,6 +37,7 @@ func (impl *Auth) SignIn(c echo.Context) error {
 	}
 
 	if err := c.Validate(res); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -55,6 +58,7 @@ func (impl *Auth) SignUp(c echo.Context) error {
 	)
 
 	if err := bind(c, &req); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusBadRequest, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -63,6 +67,7 @@ func (impl *Auth) SignUp(c echo.Context) error {
 
 	res, err := impl.Service.Auth.SignUp(ctx, &req)
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -70,6 +75,7 @@ func (impl *Auth) SignUp(c echo.Context) error {
 	}
 
 	if err := c.Validate(res); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -90,6 +96,7 @@ func (impl *Auth) Verify(c echo.Context) error {
 	)
 
 	if code == "" {
+		c.Set(dto.StatusError, dto.ErrInvalidCode.Error())
 		return c.JSON(http.StatusBadRequest, dto.Response{
 			Status:  dto.StatusError,
 			Message: dto.ErrInvalidCode.Error(),
@@ -98,6 +105,7 @@ func (impl *Auth) Verify(c echo.Context) error {
 
 	res, err := impl.Service.Auth.VerifyEmail(ctx, code)
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -105,6 +113,7 @@ func (impl *Auth) Verify(c echo.Context) error {
 	}
 
 	if err := c.Validate(res); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),

@@ -2,7 +2,9 @@ package controller
 
 import (
 	"github.com/go-playground/validator/v10"
+	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	customMiddleware "github.com/radityarestan/ecom-core/internal/middleware"
 	"github.com/radityarestan/ecom-core/internal/shared"
 	"go.uber.org/dig"
@@ -45,6 +47,9 @@ func (h *Holder) RegisterRoutes() {
 
 	app.Use(middleware.Recover())
 	app.Use(middleware.CORS())
+	app.Use(customMiddleware.MetricsMiddleware)
+
+	app.GET("/prometheus", echo.WrapHandler(promhttp.Handler()))
 
 	authRoutes := app.Group(PrefixAuthAPI)
 	{

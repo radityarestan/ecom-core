@@ -22,6 +22,7 @@ func (impl *Product) Create(c echo.Context) error {
 	)
 
 	if err := bind(c, &req); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusBadRequest, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -30,6 +31,7 @@ func (impl *Product) Create(c echo.Context) error {
 
 	res, err := impl.Service.Product.CreateProduct(ctx, &req)
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -37,6 +39,7 @@ func (impl *Product) Create(c echo.Context) error {
 	}
 
 	if err := c.Validate(res); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -60,6 +63,7 @@ func (impl *Product) Catalog(c echo.Context) error {
 
 	paramInt, err := checkIntParam(limit, offset)
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusBadRequest, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -68,6 +72,7 @@ func (impl *Product) Catalog(c echo.Context) error {
 
 	res, err := impl.Service.Product.GetProductCatalog(ctx, userID.(uint), paramInt[0], paramInt[1])
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -75,6 +80,7 @@ func (impl *Product) Catalog(c echo.Context) error {
 	}
 
 	if err := c.Validate(res); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -98,6 +104,7 @@ func (impl *Product) Search(c echo.Context) error {
 
 	paramInt, err := checkIntParam(limit, offset)
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusBadRequest, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -106,6 +113,7 @@ func (impl *Product) Search(c echo.Context) error {
 
 	res, err := impl.Service.Product.FindProducts(ctx, search, paramInt[0], paramInt[1])
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -127,6 +135,7 @@ func (impl *Product) Detail(c echo.Context) error {
 
 	id, err := strconv.Atoi(req)
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusBadRequest, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -135,6 +144,7 @@ func (impl *Product) Detail(c echo.Context) error {
 
 	res, err := impl.Service.Product.FindProductByID(ctx, uint(id))
 	if err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
@@ -142,6 +152,7 @@ func (impl *Product) Detail(c echo.Context) error {
 	}
 
 	if err := c.Validate(res); err != nil {
+		c.Set(dto.StatusError, err.Error())
 		return c.JSON(http.StatusInternalServerError, dto.Response{
 			Status:  dto.StatusError,
 			Message: err.Error(),
