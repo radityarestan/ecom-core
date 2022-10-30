@@ -42,6 +42,9 @@ In this application, we are gonna use this as a middleware to monitor the api.
 5. Load Testing with Vegeta (searching data), this apps can handle almost 4k users/s concurrently on my computer
    ![Verifying Account](https://github.com/radityarestan/ecom-core/blob/master/demo/load-testing.png?raw=true)
 
+## Deployment
+I have deployed this app to Cloud Run on GCP. You can use the github action to deploy it to your GCP account. You can find the github action in the `.github/workflows` directory.
+Please add the secrets in your github repo to make it work defined in the `deployment.yml` file.
    
 ## Author
 Christian Raditya Restanto
